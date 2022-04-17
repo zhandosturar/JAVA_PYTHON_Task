@@ -4,7 +4,7 @@ from PythonTask2 import analyzer
 
 class AnalyzerTest(TestCase):
 
-    def no_format(self):
+    def no_data(self):
         with self.assertRaises(ValueError) as e:
             analyzer('daddasdsdasd')
         self.assertEqual('Некорректные данные', e.exception.args[0])
