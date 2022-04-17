@@ -2,13 +2,16 @@ import sys
 import time
 import csv
 from memory_profiler import profile
+from multiprocessing import Pool
 
 start_time = time.time()
 
 @profile
 
 def analyzer(infile):
-    
+
+    infile = '5000000 BT Records.csv'
+
     with open(infile, 'r', newline='') as infile:
         rowreader = csv.reader(infile, delimiter=',', quotechar='"')
         listCSV = []
@@ -51,8 +54,8 @@ def analyzer(infile):
                 avg = sumV / count
                 result.append([oldDate, oldCompany, minV, maxV, avg])
 
-        except (ValueError, TypeError):
-            raise ValueError('Некорректные данные')
+        except (ValueError, ZeroDivisionError, TypeError):
+            pass
     
     with open('Result_Task2.csv', 'w', newline='') as res_file:
         writer = csv.writer(res_file)
@@ -61,6 +64,12 @@ def analyzer(infile):
     res_file.close()
 
 if __name__ =='__main__':
-    analyzer(infile='5000000 BT Records')
+    try:
+        infile = '5000000 BT Records.csv'
+        pool = Pool(8) 
+        data_outputs = pool.map(analyzer, infile)
+    finally: 
+        pool.close()
+        pool.join()
 
-print('--- %s second---' % (time.time() - start_time))
+print('---endtime is %s second---' % (time.time() - start_time))
